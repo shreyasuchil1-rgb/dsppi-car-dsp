@@ -1,0 +1,17 @@
+[connection]
+id=eth-p2p
+uuid=5406afd4-6d00-40ad-8833-21abff2ce506
+type=ethernet
+interface-name=eth0
+
+[ethernet]
+
+[ipv4]
+address1=10.55.0.1/24
+method=shared
+
+[ipv6]
+addr-gen-mode=default
+method=auto
+
+[proxy]

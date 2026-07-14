@@ -30,6 +30,11 @@ echo "==> Boot config (disables onboard/HDMI audio, loads nospi10 overlay)"
 cp system/config.txt /boot/firmware/config.txt
 cp system/nospi10.dtbo /boot/firmware/overlays/nospi10.dtbo
 
+echo "==> Ethernet P2P profile (direct cable to laptop -> http://10.55.0.1:5005)"
+install -m 600 -o root -g root system/eth-p2p.nmconnection \
+    /etc/NetworkManager/system-connections/eth-p2p.nmconnection
+nmcli connection reload || true
+
 echo "==> ALSA loopback module + default device"
 cp system/snd-aloop.conf /etc/modules-load.d/snd-aloop.conf
 cp system/asound.conf /etc/asound.conf

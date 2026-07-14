@@ -13,6 +13,7 @@ cp /boot/firmware/overlays/nospi10.dtbo system/nospi10.dtbo
 cp /etc/asound.conf system/asound.conf
 cp /etc/modules-load.d/snd-aloop.conf system/snd-aloop.conf
 sudo cp /etc/raspotify/conf system/raspotify.conf && sudo chown "$USER" system/raspotify.conf && chmod 644 system/raspotify.conf
+sudo cp /etc/NetworkManager/system-connections/eth-p2p.nmconnection system/eth-p2p.nmconnection && sudo chown "$USER" system/eth-p2p.nmconnection && chmod 644 system/eth-p2p.nmconnection
 cp /etc/systemd/system/camilladsp.service system/camilladsp.service
 cp /etc/systemd/system/camillagui.service system/camillagui.service
 cp /usr/local/bin/camilladsp bin/camilladsp

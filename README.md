@@ -64,6 +64,17 @@ snapshots does).
 | `http://<pi-ip>:5005` | CamillaGUI (edit configs, live volume/levels) |
 | `<pi-ip>:1234` | CamillaDSP websocket (used by the GUI; also scriptable) |
 
+### Direct-cable access (no router / in the car)
+
+Plug an Ethernet cable straight from a laptop to the Pi. The `eth-p2p`
+NetworkManager profile gives the Pi a fixed `10.55.0.1` and runs DHCP for
+the laptop (set the laptop's Ethernet to DHCP — the macOS default). Then:
+
+- CamillaGUI: `http://10.55.0.1:5005`
+- SSH: `ssh dsppi@10.55.0.1`
+
+Wi-Fi keeps working independently. Restored automatically by `restore.sh`.
+
 ## Signal flow
 
 ```
@@ -88,7 +99,7 @@ index, so module load order doesn't matter.
 | `coeffs/` | FIR coefficients (room/car correction filters go here) |
 | `camillagui_backend/` | CamillaGUI web UI, compiled bundle; its own config is `camillagui_backend/_internal/config/camillagui.yml` |
 | `bin/camilladsp` | CamillaDSP 4.1.3 aarch64 binary |
-| `system/` | Copies of boot config, `nospi10.dtbo`, `asound.conf`, `snd-aloop.conf`, `raspotify.conf`, systemd units |
+| `system/` | Copies of boot config, `nospi10.dtbo`, `asound.conf`, `snd-aloop.conf`, `raspotify.conf`, `eth-p2p.nmconnection`, systemd units |
 | `backup.sh` / `restore.sh` | Snapshot to git / rebuild a fresh flash |
 
 ## Car config: channel map (`configs/car_8ch.yml`)
