@@ -12,6 +12,7 @@ cp /boot/firmware/config.txt system/config.txt
 cp /boot/firmware/overlays/nospi10.dtbo system/nospi10.dtbo
 cp /etc/asound.conf system/asound.conf
 cp /etc/modules-load.d/snd-aloop.conf system/snd-aloop.conf
+sudo cp /etc/raspotify/conf system/raspotify.conf && sudo chown "$USER" system/raspotify.conf && chmod 644 system/raspotify.conf
 cp /etc/systemd/system/camilladsp.service system/camilladsp.service
 cp /etc/systemd/system/camillagui.service system/camillagui.service
 cp /usr/local/bin/camilladsp bin/camilladsp

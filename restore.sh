@@ -17,6 +17,15 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+echo "==> Raspotify (Spotify Connect)"
+if ! dpkg -s raspotify >/dev/null 2>&1; then
+    apt-get update
+    apt-get install -y curl
+    curl -sL https://dtcooper.github.io/raspotify/install.sh | sh
+fi
+install -m 600 -o root -g root system/raspotify.conf /etc/raspotify/conf
+systemctl enable raspotify
+
 echo "==> Boot config (disables onboard/HDMI audio, loads nospi10 overlay)"
 cp system/config.txt /boot/firmware/config.txt
 cp system/nospi10.dtbo /boot/firmware/overlays/nospi10.dtbo

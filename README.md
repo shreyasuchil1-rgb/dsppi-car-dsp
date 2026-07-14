@@ -18,31 +18,31 @@ rear fill, low subwoofer (20–50 Hz) and shallow sub/midbass (50–150 Hz).
 1. **Flash** Raspberry Pi OS 64-bit with Raspberry Pi Imager.
    In the Imager settings set username `dsppi`, your Wi-Fi, and enable SSH
    (Wi-Fi/SSH credentials are deliberately NOT in this repo).
-2. **Boot, SSH in, then:**
+2. **Boot, SSH in, paste this ONE command:**
 
    ```bash
-   sudo apt update && sudo apt install -y git gh
-   gh auth login        # needed because this repo is PRIVATE
-                        # → GitHub.com → HTTPS → login with web browser:
-                        #   open https://github.com/login/device on your
-                        #   phone and enter the one-time code it prints
-   gh auth setup-git     # lets plain `git push` (and backup.sh) use gh's login
-   gh repo clone shreyasuchil1-rgb/dsppi-car-dsp ~/camilladsp
-   cd ~/camilladsp
-   sudo ./restore.sh
-   sudo reboot
+   sudo apt update && sudo apt install -y git gh && gh auth login && gh auth setup-git && gh repo clone shreyasuchil1-rgb/dsppi-car-dsp ~/camilladsp && sudo ~/camilladsp/restore.sh && sudo reboot
    ```
+
+   The only interactive moment is `gh auth login` (needed because this repo
+   is PRIVATE): pick GitHub.com → HTTPS → login with web browser, open
+   https://github.com/login/device on your phone and enter the one-time code
+   it prints. Everything after that — raspotify install, boot config, ALSA
+   loopback, CamillaDSP binary + services, GUI — is automatic, ending in a
+   reboot.
 
 3. **Verify after reboot:**
 
    ```bash
-   systemctl status camilladsp camillagui   # both should be active (running)
+   systemctl status camilladsp camillagui raspotify   # all active (running)
    aplay -l                                 # should list Loopback + sndrpihifiberry
    ```
 
-`restore.sh` puts back: `/boot/firmware/config.txt`, the custom `nospi10.dtbo`
-overlay, `/etc/asound.conf`, the `snd-aloop` module autoload, the CamillaDSP
-binary, both systemd services (enabled), and adds `dsppi` to the `audio` group.
+`restore.sh` puts back: raspotify (installed from its official apt repo, with
+our `/etc/raspotify/conf`), `/boot/firmware/config.txt`, the custom
+`nospi10.dtbo` overlay, `/etc/asound.conf`, the `snd-aloop` module autoload,
+the CamillaDSP binary, both systemd services (enabled), and adds `dsppi` to
+the `audio` group.
 
 ## Saving changes (do this after every tweak)
 
@@ -65,7 +65,7 @@ ALSA setup, or upgrading the camilladsp binary.
 ## Signal flow
 
 ```
-players → plughw:Loopback,0,0
+raspotify (Spotify Connect) and other players → plughw:Loopback,0,0
             │  (snd-aloop kernel loopback)
 CamillaDSP captures hw:Loopback,1,0
             │  mixer + crossovers + delays + EQ
@@ -86,7 +86,7 @@ index, so module load order doesn't matter.
 | `coeffs/` | FIR coefficients (room/car correction filters go here) |
 | `camillagui_backend/` | CamillaGUI web UI, compiled bundle; its own config is `camillagui_backend/_internal/config/camillagui.yml` |
 | `bin/camilladsp` | CamillaDSP 4.1.3 aarch64 binary |
-| `system/` | Copies of boot config, `nospi10.dtbo`, `asound.conf`, `snd-aloop.conf`, systemd units |
+| `system/` | Copies of boot config, `nospi10.dtbo`, `asound.conf`, `snd-aloop.conf`, `raspotify.conf`, systemd units |
 | `backup.sh` / `restore.sh` | Snapshot to git / rebuild a fresh flash |
 
 ## Car config: channel map (`configs/car_8ch.yml`)
