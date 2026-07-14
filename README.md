@@ -26,6 +26,7 @@ rear fill, low subwoofer (20–50 Hz) and shallow sub/midbass (50–150 Hz).
                         # → GitHub.com → HTTPS → login with web browser:
                         #   open https://github.com/login/device on your
                         #   phone and enter the one-time code it prints
+   gh auth setup-git     # lets plain `git push` (and backup.sh) use gh's login
    gh repo clone shreyasuchil1-rgb/dsppi-car-dsp ~/camilladsp
    cd ~/camilladsp
    sudo ./restore.sh
