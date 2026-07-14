@@ -1,0 +1,16 @@
+[Unit]
+Description=CamillaGUI web frontend for CamillaDSP
+After=network.target camilladsp.service
+Wants=camilladsp.service
+
+[Service]
+Type=simple
+User=dsppi
+Group=audio
+WorkingDirectory=/home/dsppi/camilladsp/camillagui_backend
+ExecStart=/home/dsppi/camilladsp/camillagui_backend/camillagui_backend
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,51 @@
+devices:
+  samplerate: 48000
+  chunksize: 1024
+  target_level: 2048
+  adjust_period: 10
+  enable_rate_adjust: true
+  capture:
+    type: Alsa
+    channels: 2
+    device: "hw:Loopback,1,0"
+    format: S32_LE
+  playback:
+    type: Alsa
+    channels: 8
+    device: "hw:sndrpihifiberry"
+    format: S32_LE
+
+mixers:
+  route_stereo_to_8:
+    channels:
+      in: 2
+      out: 8
+    mapping:
+      - dest: 0
+        sources:
+          - channel: 0
+      - dest: 1
+        sources:
+          - channel: 1
+      - dest: 2
+        sources:
+          - channel: 0
+      - dest: 3
+        sources:
+          - channel: 1
+      - dest: 4
+        sources:
+          - channel: 0
+      - dest: 5
+        sources:
+          - channel: 1
+      - dest: 6
+        sources:
+          - channel: 0
+      - dest: 7
+        sources:
+          - channel: 1
+
+pipeline:
+  - type: Mixer
+    name: route_stereo_to_8

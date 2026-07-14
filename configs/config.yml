@@ -1,0 +1,138 @@
+description: null
+devices:
+  adjust_period: 10
+  capture:
+    channels: 2
+    device: hw:Loopback,1,0
+    format: S32_LE
+    labels: null
+    link_mute_control: null
+    link_volume_control: null
+    stop_on_inactive: null
+    type: Alsa
+  capture_samplerate: null
+  chunksize: 1024
+  enable_rate_adjust: true
+  multithreaded: true
+  playback:
+    channels: 8
+    device: hw:sndrpihifiberry
+    format: S32_LE
+    type: Alsa
+  queuelimit: null
+  rate_measure_interval: null
+  resampler: null
+  samplerate: 48000
+  silence_threshold: null
+  silence_timeout: null
+  stop_on_rate_change: null
+  target_level: 2048
+  volume_limit: null
+  volume_ramp_time: null
+  worker_threads: null
+filters: {}
+mixers:
+  route_stereo_to_8:
+    channels:
+      in: 2
+      out: 8
+    description: null
+    labels:
+    - Channel 1
+    - Channel 2
+    - Channel 3
+    - Channel 4
+    - Channel 5
+    - Channel 6
+    - Channel 7
+    - Channel 8
+    mapping:
+    - dest: 0
+      mute: null
+      sources:
+      - channel: 0
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 1
+      mute: false
+      sources:
+      - channel: 1
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+    - dest: 2
+      mute: false
+      sources:
+      - channel: 0
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+    - dest: 3
+      mute: false
+      sources:
+      - channel: 1
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+    - dest: 6
+      mute: false
+      sources:
+      - channel: 0
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+    - dest: 7
+      mute: false
+      sources:
+      - channel: 1
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+    - dest: 4
+      mute: false
+      sources:
+      - channel: 0
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+    - dest: 5
+      mute: false
+      sources:
+      - channel: 1
+        gain: 0
+        inverted: false
+        mute: false
+        scale: dB
+pipeline:
+- bypassed: null
+  description: null
+  name: route_stereo_to_8
+  type: Mixer
+processors:
+  Unnamed Processor 1:
+    description: null
+    parameters:
+      attack: 0.025
+      channels: 2
+      clip_limit: null
+      factor: 5
+      makeup_gain: 15
+      monitor_channels:
+      - 0
+      - 1
+      process_channels:
+      - 0
+      - 1
+      release: 1
+      soft_clip: false
+      threshold: -25
+    type: Compressor
+title: null

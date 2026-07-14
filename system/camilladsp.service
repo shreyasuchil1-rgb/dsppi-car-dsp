@@ -1,0 +1,15 @@
+[Unit]
+Description=CamillaDSP audio processor
+After=sound.target
+Wants=sound.target
+
+[Service]
+Type=simple
+User=dsppi
+Group=audio
+ExecStart=/usr/local/bin/camilladsp -a 0.0.0.0 -p 1234 -s /home/dsppi/camilladsp/statefile.yml /home/dsppi/camilladsp/config.yml
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

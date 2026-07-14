@@ -1,0 +1,339 @@
+description: null
+devices:
+  adjust_period: 10
+  capture:
+    channels: 2
+    device: hw:Loopback,1,0
+    format: S32_LE
+    labels: null
+    link_mute_control: null
+    link_volume_control: null
+    stop_on_inactive: null
+    type: Alsa
+  capture_samplerate: null
+  chunksize: 1024
+  enable_rate_adjust: true
+  multithreaded: null
+  playback:
+    channels: 8
+    device: hw:sndrpihifiberry
+    format: S32_LE
+    type: Alsa
+  queuelimit: null
+  rate_measure_interval: null
+  samplerate: 48000
+  silence_threshold: null
+  silence_timeout: null
+  stop_on_rate_change: null
+  target_level: 2048
+  volume_limit: null
+  volume_ramp_time: null
+  worker_threads: null
+filters:
+  '12000':
+    description: null
+    parameters:
+      freq: 12000
+      gain: 2.2
+      q: 0.5
+      type: Peaking
+    type: Biquad
+  '150':
+    description: null
+    parameters:
+      freq: 150
+      gain: 2.5
+      q: 0.5
+      type: Peaking
+    type: Biquad
+  '5500':
+    description: null
+    parameters:
+      freq: 5500
+      gain: 2
+      q: 0.5
+      type: Peaking
+    type: Biquad
+  '80':
+    description: null
+    parameters:
+      freq: 80
+      gain: 2.8
+      q: 0.5
+      type: Peaking
+    type: Biquad
+  cf_cross_delay:
+    description: null
+    parameters:
+      delay: 3
+      subsample: true
+      unit: ms
+    type: Delay
+  cf_cross_gain:
+    description: null
+    parameters:
+      gain: -8
+      inverted: null
+      mute: null
+      scale: null
+    type: Gain
+  cf_cross_lowpass:
+    description: null
+    parameters:
+      freq: 700
+      type: LowpassFO
+    type: Biquad
+  cf_direct_gain:
+    description: null
+    parameters:
+      gain: 0
+      inverted: null
+      mute: null
+      scale: null
+    type: Gain
+  dc_blocker:
+    description: null
+    parameters:
+      freq: 2
+      type: HighpassFO
+    type: Biquad
+  headroom_6db:
+    description: null
+    parameters:
+      gain: 0
+      inverted: null
+      mute: null
+      scale: null
+    type: Gain
+  hp_20hz_lr24:
+    description: null
+    parameters:
+      freq: 20
+      order: 4
+      type: LinkwitzRileyHighpass
+    type: BiquadCombo
+  peq_band_01:
+    description: null
+    parameters:
+      freq: 31.5
+      gain: 0
+      q: 1
+      type: Peaking
+    type: Biquad
+  peq_band_05:
+    description: null
+    parameters:
+      freq: 300
+      gain: 2.5
+      q: 1
+      type: Peaking
+    type: Biquad
+  peq_band_06:
+    description: null
+    parameters:
+      freq: 1000
+      gain: 1.5
+      q: 1
+      type: Peaking
+    type: Biquad
+  peq_band_07:
+    description: null
+    parameters:
+      freq: 2500
+      gain: -2.5
+      q: 1
+      type: Peaking
+    type: Biquad
+  peq_band_08:
+    description: null
+    parameters:
+      freq: 4000
+      gain: 1
+      q: 1
+      type: Peaking
+    type: Biquad
+  peq_band_09:
+    description: null
+    parameters:
+      freq: 8000
+      gain: 2.2
+      q: 1
+      type: Peaking
+    type: Biquad
+  peq_band_10:
+    description: null
+    parameters:
+      freq: 15000
+      gain: 1
+      q: 1
+      type: Peaking
+    type: Biquad
+mixers:
+  cf_combine:
+    channels:
+      in: 4
+      out: 2
+    description: null
+    labels: null
+    mapping:
+    - dest: 0
+      mute: null
+      sources:
+      - channel: 0
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+      - channel: 3
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 1
+      mute: null
+      sources:
+      - channel: 1
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+      - channel: 2
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+  cf_split:
+    channels:
+      in: 2
+      out: 4
+    description: null
+    labels: null
+    mapping:
+    - dest: 0
+      mute: null
+      sources:
+      - channel: 0
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 1
+      mute: null
+      sources:
+      - channel: 1
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 2
+      mute: null
+      sources:
+      - channel: 0
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 3
+      mute: null
+      sources:
+      - channel: 1
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+  to_dac8x:
+    channels:
+      in: 2
+      out: 8
+    description: null
+    labels: null
+    mapping:
+    - dest: 0
+      mute: null
+      sources:
+      - channel: 0
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 1
+      mute: null
+      sources:
+      - channel: 1
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+pipeline:
+- bypassed: null
+  channels:
+  - 0
+  - 1
+  description: null
+  names:
+  - dc_blocker
+  - hp_20hz_lr24
+  - headroom_6db
+  - peq_band_01
+  - '80'
+  - '150'
+  - peq_band_05
+  - peq_band_06
+  - peq_band_07
+  - peq_band_08
+  - '5500'
+  - peq_band_09
+  - '12000'
+  - peq_band_10
+  type: Filter
+- bypassed: true
+  description: null
+  name: cf_split
+  type: Mixer
+- bypassed: true
+  channels:
+  - 0
+  - 1
+  description: null
+  names:
+  - cf_direct_gain
+  type: Filter
+- bypassed: false
+  channels:
+  - 1
+  description: null
+  names:
+  - cf_cross_delay
+  type: Filter
+- bypassed: true
+  description: null
+  name: cf_combine
+  type: Mixer
+- bypassed: null
+  description: null
+  name: soft_limiter
+  type: Processor
+- bypassed: null
+  description: null
+  name: to_dac8x
+  type: Mixer
+processors:
+  soft_limiter:
+    description: null
+    parameters:
+      attack: 0.005
+      channels: 2
+      clip_limit: -1
+      factor: 20
+      makeup_gain: 0
+      monitor_channels:
+      - 0
+      - 1
+      process_channels:
+      - 0
+      - 1
+      release: 0.1
+      soft_clip: true
+      threshold: -4
+    type: Compressor
+title: null
