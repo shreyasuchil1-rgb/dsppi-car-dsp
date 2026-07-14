@@ -4,7 +4,7 @@ Full snapshot of the Raspberry Pi 5 + HiFiBerry DAC8x DSP rig for a
 2011 Chevy Cruze 2.0 diesel: 4-way active front (woofers + tweeters),
 rear fill, low subwoofer (20–50 Hz) and shallow sub/midbass (50–150 Hz).
 
-**Repo:** https://github.com/shreyasuchil1-rgb/dsppi-car-dsp (private)
+**Repo:** https://github.com/shreyasuchil1-rgb/dsppi-car-dsp (public — contains no secrets)
 
 ## Hardware this assumes
 
@@ -18,18 +18,15 @@ rear fill, low subwoofer (20–50 Hz) and shallow sub/midbass (50–150 Hz).
 1. **Flash** Raspberry Pi OS 64-bit with Raspberry Pi Imager.
    In the Imager settings set username `dsppi`, your Wi-Fi, and enable SSH
    (Wi-Fi/SSH credentials are deliberately NOT in this repo).
-2. **Boot, SSH in, paste this ONE command:**
+2. **Boot, SSH in, paste this ONE command — no logins, no prompts:**
 
    ```bash
-   sudo apt update && sudo apt install -y git gh && gh auth login && gh auth setup-git && gh repo clone shreyasuchil1-rgb/dsppi-car-dsp ~/camilladsp && sudo ~/camilladsp/restore.sh && sudo reboot
+   curl -fsSL https://raw.githubusercontent.com/shreyasuchil1-rgb/dsppi-car-dsp/main/bootstrap.sh | sudo bash
    ```
 
-   The only interactive moment is `gh auth login` (needed because this repo
-   is PRIVATE): pick GitHub.com → HTTPS → login with web browser, open
-   https://github.com/login/device on your phone and enter the one-time code
-   it prints. Everything after that — raspotify install, boot config, ALSA
-   loopback, CamillaDSP binary + services, GUI — is automatic, ending in a
-   reboot.
+   It installs git, clones this repo to `~/camilladsp`, runs `restore.sh`
+   (raspotify install, boot config, ALSA loopback, CamillaDSP binary +
+   services, GUI), and reboots. When the Pi comes back up it IS the snapshot.
 
 3. **Verify after reboot:**
 
@@ -54,6 +51,11 @@ Edits inside `~/camilladsp` (configs, coeffs) are picked up by git directly;
 `backup.sh` additionally re-copies the system files from `/boot` and `/etc`,
 commits everything, and pushes. Run it after changing boot config, services,
 ALSA setup, or upgrading the camilladsp binary.
+
+Pushing needs GitHub credentials. This Pi is already set up; on a
+freshly restored Pi run once: `sudo apt install -y gh && gh auth login &&
+gh auth setup-git` (restore itself never needs this — only saving NEW
+snapshots does).
 
 ## Web interfaces
 
