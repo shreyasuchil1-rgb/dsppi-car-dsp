@@ -26,6 +26,11 @@ fi
 install -m 600 -o root -g root system/raspotify.conf /etc/raspotify/conf
 systemctl enable raspotify
 
+echo "==> Shairport Sync (AirPlay receiver, advertises as \"Cruze\")"
+apt-get install -y shairport-sync
+install -m 644 -o root -g root system/shairport-sync.conf /etc/shairport-sync.conf
+systemctl enable shairport-sync
+
 echo "==> Boot config (disables onboard/HDMI audio, loads nospi10 overlay)"
 cp system/config.txt /boot/firmware/config.txt
 cp system/nospi10.dtbo /boot/firmware/overlays/nospi10.dtbo

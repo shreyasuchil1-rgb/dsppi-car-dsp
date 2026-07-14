@@ -25,18 +25,20 @@ rear fill, low subwoofer (20–50 Hz) and shallow sub/midbass (50–150 Hz).
    ```
 
    It installs git, clones this repo to `~/camilladsp`, runs `restore.sh`
-   (raspotify install, boot config, ALSA loopback, CamillaDSP binary +
-   services, GUI), and reboots. When the Pi comes back up it IS the snapshot.
+   (raspotify + shairport-sync install, boot config, ALSA loopback,
+   CamillaDSP binary + services, GUI), and reboots. When the Pi comes back
+   up it IS the snapshot.
 
 3. **Verify after reboot:**
 
    ```bash
-   systemctl status camilladsp camillagui raspotify   # all active (running)
+   systemctl status camilladsp camillagui raspotify shairport-sync   # all active (running)
    aplay -l                                 # should list Loopback + sndrpihifiberry
    ```
 
 `restore.sh` puts back: raspotify (installed from its official apt repo, with
-our `/etc/raspotify/conf`), `/boot/firmware/config.txt`, the custom
+our `/etc/raspotify/conf`), shairport-sync (Debian package, with our
+`/etc/shairport-sync.conf`), `/boot/firmware/config.txt`, the custom
 `nospi10.dtbo` overlay, `/etc/asound.conf`, the `snd-aloop` module autoload,
 the CamillaDSP binary, both systemd services (enabled), and adds `dsppi` to
 the `audio` group.
@@ -78,12 +80,25 @@ Wi-Fi keeps working independently. Restored automatically by `restore.sh`.
 ## Signal flow
 
 ```
-raspotify (Spotify Connect) and other players → plughw:Loopback,0,0
+raspotify (Spotify Connect), shairport-sync (AirPlay)
+        and other players → plughw:Loopback,0,0
             │  (snd-aloop kernel loopback)
 CamillaDSP captures hw:Loopback,1,0
             │  mixer + crossovers + delays + EQ
         hw:sndrpihifiberry → DAC8x → 8 × RCA line out → amps
 ```
+
+### Audio sources
+
+- **Spotify Connect** (raspotify/librespot): shows up in the Spotify app of
+  any phone on the same network as the Pi. 320 kbps Ogg Vorbis — Spotify does
+  not serve its Lossless tier to third-party Connect devices.
+- **AirPlay** (shairport-sync, advertises as **"Cruze"**): any iPhone/iPad/Mac
+  on the same network. Carries ALAC 16-bit/44.1 kHz — true lossless, e.g. from
+  Apple Music. AirPlay 1 (Debian package); config at `/etc/shairport-sync.conf`.
+
+Both need the phone and the Pi on one network — in the car that means the
+Pi auto-joins a phone hotspot; at home it's the house Wi-Fi.
 
 Onboard/HDMI audio are disabled in config.txt so card names never shift.
 All configs reference cards by NAME (`Loopback`, `sndrpihifiberry`), never by
@@ -99,7 +114,7 @@ index, so module load order doesn't matter.
 | `coeffs/` | FIR coefficients (room/car correction filters go here) |
 | `camillagui_backend/` | CamillaGUI web UI, compiled bundle; its own config is `camillagui_backend/_internal/config/camillagui.yml` |
 | `bin/camilladsp` | CamillaDSP 4.1.3 aarch64 binary |
-| `system/` | Copies of boot config, `nospi10.dtbo`, `asound.conf`, `snd-aloop.conf`, `raspotify.conf`, `eth-p2p.nmconnection`, systemd units |
+| `system/` | Copies of boot config, `nospi10.dtbo`, `asound.conf`, `snd-aloop.conf`, `raspotify.conf`, `shairport-sync.conf`, `eth-p2p.nmconnection`, systemd units |
 | `backup.sh` / `restore.sh` | Snapshot to git / rebuild a fresh flash |
 
 ## Car config: channel map (`configs/car_8ch.yml`)
