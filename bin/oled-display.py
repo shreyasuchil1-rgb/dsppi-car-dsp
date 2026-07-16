@@ -94,16 +94,20 @@ def draw_clock(draw, minute):
     dx = minute % 3
     dy = minute % 2
     now = datetime.now()
-    t = now.strftime("%H:%M")
+    t = now.strftime("%-I:%M")
+    ampm = now.strftime("%p")
     w = draw.textlength(t, font=font_clock)
-    draw.text(((128 - w) // 2 + dx, 6 + dy), t, font=font_clock, fill="white")
+    w_ampm = draw.textlength(ampm, font=font_small)
+    x = (128 - (w + 4 + w_ampm)) // 2 + dx
+    draw.text((x, 6 + dy), t, font=font_clock, fill="white")
+    draw.text((x + w + 4, 6 + dy + 20), ampm, font=font_small, fill="white")
     line = now.strftime("%a %d %b") + "   " + cpu_temp()
     w = draw.textlength(line, font=font_small)
     draw.text(((128 - w) // 2 + dx, 46 + dy), line, font=font_small, fill="white")
 
 
 def draw_spotify(draw, track, pos_ms, title_marquee, artist_marquee):
-    header = datetime.now().strftime("%H:%M") + "  " + cpu_temp()
+    header = datetime.now().strftime("%-I:%M %p") + "  " + cpu_temp()
     w = draw.textlength(header, font=font_tiny)
     draw.text(((128 - w) // 2, 0), header, font=font_tiny, fill="white")
 
