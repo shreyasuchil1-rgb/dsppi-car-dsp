@@ -18,6 +18,9 @@ sudo cp /etc/NetworkManager/system-connections/eth-p2p.nmconnection system/eth-p
 cp /etc/systemd/system/camilladsp.service system/camilladsp.service
 cp /etc/systemd/system/camillagui.service system/camillagui.service
 cp /usr/local/bin/camilladsp bin/camilladsp
+cp /etc/systemd/system/oled-display.service system/oled-display.service
+cp /usr/local/bin/oled-spotify-event bin/oled-spotify-event
+cp ~/oled/display.py bin/oled-display.py
 
 git add -A
 if git diff --cached --quiet; then

@@ -1,0 +1,12 @@
+[Unit]
+Description=OLED status display (clock/temp + Spotify now playing)
+After=multi-user.target
+
+[Service]
+User=dsppi
+ExecStart=/home/dsppi/oled/venv/bin/python /home/dsppi/oled/display.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

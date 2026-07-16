@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+"""librespot --onevent hook: merge player events into a JSON state file.
+
+Runs inside raspotify's sandbox; /run/raspotify is its RuntimeDirectory,
+so the state file disappears automatically when the service stops.
+The OLED display daemon polls this file.
+"""
+import json
+import os
+import time
+
+STATE = "/run/raspotify/oled-event.json"
+
+ev = os.environ.get("PLAYER_EVENT", "")
+if not ev:
+    raise SystemExit(0)
+
+try:
+    with open(STATE) as f:
+        state = json.load(f)
+except Exception:
+    state = {}
+
+now = time.time()
+state["last_event"] = ev
+state["event_time"] = now
+
+if ev == "track_changed":
+    state["track"] = {
+        "name": os.environ.get("NAME", ""),
+        "artists": os.environ.get("ARTISTS", "").replace("\n", ", "),
+        "duration_ms": int(os.environ.get("DURATION_MS") or 0),
+        "track_id": os.environ.get("TRACK_ID", ""),
+    }
+    state["position_ms"] = 0
+    state["position_time"] = now
+elif ev == "playing":
+    state["state"] = "playing"
+    state["position_ms"] = int(os.environ.get("POSITION_MS") or 0)
+    state["position_time"] = now
+elif ev == "paused":
+    state["state"] = "paused"
+    state["position_ms"] = int(os.environ.get("POSITION_MS") or 0)
+    state["position_time"] = now
+elif ev in ("seeked", "position_correction"):
+    state["position_ms"] = int(os.environ.get("POSITION_MS") or 0)
+    state["position_time"] = now
+elif ev in ("stopped", "session_disconnected", "unavailable"):
+    state["state"] = "stopped"
+
+tmp = STATE + ".tmp"
+with open(tmp, "w") as f:
+    json.dump(state, f)
+os.chmod(tmp, 0o644)
+os.replace(tmp, STATE)
