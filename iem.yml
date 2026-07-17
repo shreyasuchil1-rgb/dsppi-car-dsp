@@ -1,0 +1,177 @@
+description: null
+devices:
+  adjust_period: 10
+  capture:
+    channels: 2
+    device: hw:Loopback,1,0
+    format: S32_LE
+    labels: null
+    link_mute_control: null
+    link_volume_control: null
+    stop_on_inactive: null
+    type: Alsa
+  capture_samplerate: null
+  chunksize: 1024
+  enable_rate_adjust: true
+  multithreaded: null
+  playback:
+    channels: 8
+    device: hw:sndrpihifiberry
+    format: S32_LE
+    type: Alsa
+  queuelimit: null
+  rate_measure_interval: null
+  resampler: null
+  samplerate: 48000
+  silence_threshold: null
+  silence_timeout: null
+  stop_on_rate_change: null
+  target_level: 2048
+  volume_limit: null
+  volume_ramp_time: null
+  worker_threads: null
+filters:
+  '4500':
+    description: null
+    parameters:
+      freq: 4500
+      gain: -1.5
+      q: 2
+      type: Peaking
+    type: Biquad
+  Loudness:
+    description: null
+    parameters:
+      attenuate_mid: true
+      fader: Aux1
+      high_boost: 3
+      low_boost: 12
+      reference_level: -18
+    type: Loudness
+  air:
+    description: null
+    parameters:
+      freq: 12000
+      gain: 2
+      q: 0.7
+      type: Highshelf
+    type: Biquad
+  bass_shelf:
+    description: null
+    parameters:
+      freq: 35
+      gain: 7.5
+      q: 0.68
+      type: Lowshelf
+    type: Biquad
+  highpass:
+    description: null
+    parameters:
+      freq: 20
+      order: 2
+      type: ButterworthHighpass
+    type: BiquadCombo
+  kick:
+    description: null
+    parameters:
+      freq: 80
+      gain: 3.5
+      q: 0.9
+      type: Peaking
+    type: Biquad
+  limiter:
+    description: null
+    parameters:
+      clip_limit: -0.5
+      soft_clip: true
+    type: Limiter
+  lower_mids:
+    description: null
+    parameters:
+      freq: 900
+      gain: 1
+      q: 1
+      type: Peaking
+    type: Biquad
+  mud_cut:
+    description: null
+    parameters:
+      freq: 320
+      gain: -2.5
+      q: 1.3
+      type: Peaking
+    type: Biquad
+  sibilance:
+    description: null
+    parameters:
+      freq: 8200
+      gain: -2.5
+      q: 2.2
+      type: Peaking
+    type: Biquad
+  vocal_presence:
+    description: null
+    parameters:
+      freq: 2400
+      gain: 2.8
+      q: 0.9
+      type: Peaking
+    type: Biquad
+  warmth:
+    description: null
+    parameters:
+      freq: 180
+      gain: 1.5
+      q: 1.1
+      type: Peaking
+    type: Biquad
+mixers:
+  route_stereo_to_8:
+    channels:
+      in: 2
+      out: 8
+    description: null
+    labels: null
+    mapping:
+    - dest: 0
+      mute: null
+      sources:
+      - channel: 0
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+    - dest: 1
+      mute: null
+      sources:
+      - channel: 1
+        gain: null
+        inverted: null
+        mute: null
+        scale: null
+pipeline:
+- bypassed: null
+  description: null
+  name: route_stereo_to_8
+  type: Mixer
+- bypassed: null
+  channels:
+  - 0
+  - 1
+  description: null
+  names:
+  - highpass
+  - Loudness
+  - bass_shelf
+  - kick
+  - warmth
+  - mud_cut
+  - lower_mids
+  - '4500'
+  - vocal_presence
+  - sibilance
+  - air
+  - limiter
+  type: Filter
+processors: {}
+title: null
