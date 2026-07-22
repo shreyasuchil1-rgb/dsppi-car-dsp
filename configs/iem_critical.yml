@@ -3,7 +3,7 @@ devices:
   adjust_period: 10
   capture:
     channels: 2
-    device: hw:Loopback,1,0
+    device: loop_share
     format: S32_LE
     labels: null
     link_mute_control: null
@@ -34,7 +34,7 @@ filters:
     description: null
     parameters:
       freq: 12000
-      gain: 2.2
+      gain: 1
       q: 0.5
       type: Peaking
     type: Biquad
@@ -65,7 +65,7 @@ filters:
   cf_cross_delay:
     description: null
     parameters:
-      delay: 3
+      delay: 0.3
       subsample: true
       unit: ms
     type: Delay
@@ -91,20 +91,6 @@ filters:
       mute: null
       scale: null
     type: Gain
-  dc_blocker:
-    description: null
-    parameters:
-      freq: 2
-      type: HighpassFO
-    type: Biquad
-  headroom_6db:
-    description: null
-    parameters:
-      gain: 0
-      inverted: null
-      mute: null
-      scale: null
-    type: Gain
   hp_20hz_lr24:
     description: null
     parameters:
@@ -115,8 +101,8 @@ filters:
   peq_band_01:
     description: null
     parameters:
-      freq: 31.5
-      gain: 0
+      freq: 50
+      gain: 2
       q: 1
       type: Peaking
     type: Biquad
@@ -140,7 +126,7 @@ filters:
     description: null
     parameters:
       freq: 2500
-      gain: -2.5
+      gain: 0
       q: 1
       type: Peaking
     type: Biquad
@@ -156,7 +142,7 @@ filters:
     description: null
     parameters:
       freq: 8000
-      gain: 2.2
+      gain: 1.2
       q: 1
       type: Peaking
     type: Biquad
@@ -164,7 +150,7 @@ filters:
     description: null
     parameters:
       freq: 15000
-      gain: 1
+      gain: 0.5
       q: 1
       type: Peaking
     type: Biquad
@@ -271,9 +257,7 @@ pipeline:
   - 1
   description: null
   names:
-  - dc_blocker
   - hp_20hz_lr24
-  - headroom_6db
   - peq_band_01
   - '80'
   - '150'
@@ -309,7 +293,7 @@ pipeline:
   description: null
   name: cf_combine
   type: Mixer
-- bypassed: null
+- bypassed: false
   description: null
   name: soft_limiter
   type: Processor
@@ -321,10 +305,10 @@ processors:
   soft_limiter:
     description: null
     parameters:
-      attack: 0.005
+      attack: 0.04
       channels: 2
-      clip_limit: -1
-      factor: 20
+      clip_limit: -0.5
+      factor: 1.2
       makeup_gain: 0
       monitor_channels:
       - 0
@@ -332,8 +316,8 @@ processors:
       process_channels:
       - 0
       - 1
-      release: 0.1
+      release: 0.3
       soft_clip: true
-      threshold: -4
+      threshold: -8
     type: Compressor
 title: null

@@ -1,13 +1,3 @@
-# 8-channel active car setup — Chevy Cruze
-# ch 0/1: front woofer L/R   (150 Hz – 2.5 kHz)
-# ch 2/3: front tweeter L/R  (2.5 kHz +)
-# ch 4/5: rear fill L/R      (150 Hz +, shelved down)
-# ch 6:   low subwoofer      (20 – 50 Hz, L+R summed)
-# ch 7:   shallow sub        (50 – 150 Hz, L+R summed)
-#
-# All crossover points are starting values — set them to your drivers' specs,
-# then fine-tune with measurements (REW + UMIK at the driver's seat).
-
 devices:
   samplerate: 48000
   chunksize: 1024
@@ -26,159 +16,36 @@ devices:
     format: S32_LE
 
 mixers:
-  car_2_to_8:
+  route_stereo_to_8:
     channels:
       in: 2
       out: 8
     mapping:
-      - dest: 0            # front woofer L
+      - dest: 0
         sources:
           - channel: 0
-      - dest: 1            # front woofer R
+      - dest: 1
         sources:
           - channel: 1
-      - dest: 2            # tweeter L
+      - dest: 2
         sources:
           - channel: 0
-      - dest: 3            # tweeter R
+      - dest: 3
         sources:
           - channel: 1
-      - dest: 4            # rear fill L
+      - dest: 4
         sources:
           - channel: 0
-      - dest: 5            # rear fill R
+      - dest: 5
         sources:
           - channel: 1
-      - dest: 6            # low sub: L+R summed, -6 dB per source to avoid clipping
-        sources:
-          - channel: 0
-            gain: -6
-          - channel: 1
-            gain: -6
-      - dest: 7            # shallow sub: L+R summed
+      - dest: 6
         sources:
           - channel: 0
-            gain: -6
+      - dest: 7
+        sources:
           - channel: 1
-            gain: -6
-
-filters:
-  # ---- crossovers (Linkwitz-Riley 24 dB/oct) ----
-  hp_150:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyHighpass
-      freq: 150
-      order: 4
-  lp_2500:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyLowpass
-      freq: 2500
-      order: 4
-  hp_2500:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyHighpass
-      freq: 2500
-      order: 4
-  hp_20:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyHighpass
-      freq: 20
-      order: 4
-  lp_50:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyLowpass
-      freq: 50
-      order: 4
-  hp_50:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyHighpass
-      freq: 50
-      order: 4
-  lp_150:
-    type: BiquadCombo
-    parameters:
-      type: LinkwitzRileyLowpass
-      freq: 150
-      order: 4
-
-  # ---- per-channel time alignment (ms; measure distances from head position,
-  #      farthest speaker gets 0, others get (farthest - this) / 343 * 1000) ----
-  delay_fw_l:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-  delay_fw_r:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-  delay_tw_l:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-  delay_tw_r:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-  delay_rear:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-  delay_sub_low:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-  delay_sub_mid:
-    type: Delay
-    parameters: { delay: 0.0, unit: ms }
-
-  # ---- per-section level trim (dB) ----
-  gain_woofer:
-    type: Gain
-    parameters: { gain: 0.0 }
-  gain_tweeter:
-    type: Gain
-    parameters: { gain: 0.0 }
-  gain_rear:
-    type: Gain
-    parameters: { gain: -6.0 }   # rear fill usually sits well below the front stage
-  gain_sub_low:
-    type: Gain
-    parameters: { gain: 0.0 }
-  gain_sub_mid:
-    type: Gain
-    parameters: { gain: 0.0 }
 
 pipeline:
   - type: Mixer
-    name: car_2_to_8
-
-  # front woofers: 150 – 2500
-  - type: Filter
-    channels: [0]
-    names: [hp_150, lp_2500, gain_woofer, delay_fw_l]
-  - type: Filter
-    channels: [1]
-    names: [hp_150, lp_2500, gain_woofer, delay_fw_r]
-
-  # tweeters: 2500+
-  - type: Filter
-    channels: [2]
-    names: [hp_2500, gain_tweeter, delay_tw_l]
-  - type: Filter
-    channels: [3]
-    names: [hp_2500, gain_tweeter, delay_tw_r]
-
-  # rear fill: 150+, trimmed down
-  - type: Filter
-    channels: [4, 5]
-    names: [hp_150, gain_rear, delay_rear]
-
-  # low sub: 20 – 50
-  - type: Filter
-    channels: [6]
-    names: [hp_20, lp_50, gain_sub_low, delay_sub_low]
-
-  # shallow sub / midbass: 50 – 150
-  - type: Filter
-    channels: [7]
-    names: [hp_50, lp_150, gain_sub_mid, delay_sub_mid]
+    name: route_stereo_to_8
